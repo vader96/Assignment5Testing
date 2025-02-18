@@ -1,22 +1,20 @@
 package org.example.Assignment;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
 public class FilterInvoice {
-    QueryInvoicesDAO dao;
-    Database db;
+    private QueryInvoicesDAO dao;
 
-    // We want to stub the dao to avoid interacting with database, however it is hard to do so, since dao is initialized internally
-    // we need some way to inject dependency which is a stub, so we don't interact with database explicitly
-    // we want it to depend on concretion, but only an abstraction.
-    public FilterInvoice() {
-        // this class doesn't need db, only dao needs it... there is a tight coupling
-        // this is called dependency instantiation not injection
-        this.db = new Database();
+    // This code has been refactored to use dependency injection, which allows me to mock/stub the database in tests.
+    // Instead of creating a new Database instance inside, we pass the Database from outside.
+    public FilterInvoice(Database db) {
         this.dao = new QueryInvoicesDAO(db);
     }
+
+    // Method that filters out invoices with a value less than 100.
     public List<Invoice> lowValueInvoices() {
             List<Invoice> all = dao.all();
 
